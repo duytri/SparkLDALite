@@ -36,10 +36,13 @@ object SparkLDALite {
           return
         } else {
           //~~~~~~~~~~~ Spark ~~~~~~~~~~~
-          val conf = new SparkConf().setAppName("SparkGibbsLDA").setMaster("spark://PTNHTTT05:7077")
+          val conf = new SparkConf()
+            .setAppName("SparkLDALite")
+            .setMaster("spark://PTNHTTT05:7077")
+            .set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
+            .set("spark.kryo.registrator", "com.art.spark.AvroKyroRegistrator")
           val spark = SparkSession.builder().config(conf).getOrCreate()
           val sc = spark.sparkContext
-          sc.setLogLevel("ERROR")
 
           //~~~~~~~~~~~ Body ~~~~~~~~~~~
           // Load documents, and prepare them for LDA.

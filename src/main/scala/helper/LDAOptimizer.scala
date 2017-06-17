@@ -64,7 +64,7 @@ class LDAOptimizer {
     // Partition such that edges are grouped by document
     this.graph = Graph(docTermVertices, edges).partitionBy(PartitionStrategy.EdgePartition1D)
     this.k = k
-    this.vocabSize = docs.take(1).head._2.size
+    this.vocabSize = vocabSize.toInt
     this.globalTopicTotals = computeGlobalTopicTotals()
     this
   }
@@ -107,7 +107,9 @@ class LDAOptimizer {
       graph.aggregateMessages[(Boolean, TopicCounts)](sendMsg, mergeMsg)
         .mapValues(_._2)
     // Update the vertex descriptors with the new counts.
-    graph =  Graph(docTopicDistributions, graph.edges)
+    val newGraph = Graph(docTopicDistributions, graph.edges)
+    graph = newGraph
+    graph.cache()
     globalTopicTotals = computeGlobalTopicTotals()
     this
   }
